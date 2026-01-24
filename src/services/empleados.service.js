@@ -20,3 +20,6 @@ export const estadoEmpleadoService = async (id, estado) => {
     },
   );
 };
+export const editarEmpleadoServicio = async (id, data) => {
+  return await empleadoModel.findByIdAndUpdate(id, data, { new: true });
+};
