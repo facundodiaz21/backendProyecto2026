@@ -1,5 +1,6 @@
 import {
   crearEmpleadoService,
+  editarEmpleadoServicio,
   estadoEmpleadoService,
   obtenerEmpleadosPorIdService,
   obtenerEmpleadosService,
@@ -46,5 +47,21 @@ export const estadoEmpleadoController = async (req, res) => {
   res.status(200).json({
     mensaje: "estado de usuario modificado con exito",
     empleadoActualizado,
+  });
+};
+export const editarEmpleadoController = async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  const empleadoEditado = await editarEmpleadoServicio(id, data);
+
+  if (!empleadoEditado) {
+    return res.status(404).json({
+      mensaje: "Usuario no encontrado",
+      datos: null,
+    });
+  }
+  res.status(200).json({
+    mensaje: "Usuario actualizado con exito",
+    empleadoEditado,
   });
 };
