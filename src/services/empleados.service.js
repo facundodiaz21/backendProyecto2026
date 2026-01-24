@@ -8,6 +8,15 @@ export const obtenerEmpleadosService = async () => {
 export const crearEmpleadoService = async (data) => {
   return await empleadoModel.create(data);
 };
-export const obtenerEmpleadosPorIdService = async (id)=>{
-return await empleadoModel.findById(id)
-}
+export const obtenerEmpleadosPorIdService = async (id) => {
+  return await empleadoModel.findById(id);
+};
+export const estadoEmpleadoService = async (id, estado) => {
+  return await empleadoModel.findByIdAndUpdate(
+    id,
+    { estado: estado },
+    {
+      new: true,
+    },
+  );
+};
