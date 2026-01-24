@@ -8,3 +8,6 @@ export const obtenerEmpleadosService = async () => {
 export const crearEmpleadoService = async (data) => {
   return await empleadoModel.create(data);
 };
+export const obtenerEmpleadosPorIdService = async (id)=>{
+return await empleadoModel.findById(id)
+}
