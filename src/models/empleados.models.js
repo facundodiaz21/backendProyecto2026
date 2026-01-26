@@ -5,9 +5,27 @@ import { estadoEmpleado } from "../const/estado.js";
 const { Schema } = mongoose;
 const empleadoSchema = new Schema(
   {
-    nombre: { type: String, required: true, trim: true },
-    puesto: { type: String, enum: rolesPermitidos, default: "recepcion" },
-    contacto: { type: String, required: true, trim: true },
+    nombre: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 10,
+    },
+    puesto: {
+      type: String,
+      enum: rolesPermitidos,
+      default: "recepcion",
+      minlength: 3,
+      maxlength: 15,
+    },
+    contacto: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 10,
+    },
     estado: { type: String, enum: estadoEmpleado, default: "activo" },
   },
   {

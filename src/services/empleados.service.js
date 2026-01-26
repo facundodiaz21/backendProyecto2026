@@ -1,4 +1,5 @@
 import { empleadoModel } from "../models/empleados.models.js";
+import mongoose from "mongoose";
 
 export const obtenerEmpleadosService = async () => {
   return await empleadoModel.find({
@@ -12,14 +13,22 @@ export const obtenerEmpleadosPorIdService = async (id) => {
   return await empleadoModel.findById(id);
 };
 export const estadoEmpleadoService = async (id, estado) => {
-  return await empleadoModel.findByIdAndUpdate(
-    id,
-    { estado: estado },
-    {
-      new: true,
-    },
-  );
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
+  const empleado = await empleadoModel.findById(id);
+  if (!empleado) return null;
+
+  empleado.estado = estado;
+  return await empleado.save();
 };
 export const editarEmpleadoServicio = async (id, data) => {
-  return await empleadoModel.findByIdAndUpdate(id, data, { new: true });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
+  const empleado = await empleadoModel.findById(id);
+  if (!empleado) return null;
+
+  Object.assign(empleado, data);
+  return await empleado.save();
 };
