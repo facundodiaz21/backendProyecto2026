@@ -32,3 +32,10 @@ export const editarEmpleadoServicio = async (id, data) => {
   Object.assign(empleado, data);
   return await empleado.save();
 };
+export const eliminarEmpleadoService = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
+  const empleadoEliminado = await empleadoModel.findByIdAndDelete(id);
+  return empleadoEliminado;
+};

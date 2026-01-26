@@ -1,6 +1,7 @@
 import {
   crearEmpleadoService,
   editarEmpleadoServicio,
+  eliminarEmpleadoService,
   estadoEmpleadoService,
   obtenerEmpleadosPorIdService,
   obtenerEmpleadosService,
@@ -64,4 +65,13 @@ export const editarEmpleadoController = async (req, res) => {
     mensaje: "Usuario actualizado con exito",
     empleadoEditado,
   });
+};
+export const eliminarEmpleadoController = async (req, res) => {
+  const id = req.params.id;
+  const empleadoEliminado = await eliminarEmpleadoService(id);
+
+  if (!empleadoEliminado) {
+    return res.status(404).json({ mensaje: "usuario no encontrado" });
+  }
+  res.status(200).json({ mensaje: "empleado eliminado con exito" });
 };
