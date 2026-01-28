@@ -9,8 +9,8 @@ const empleadoSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 3,
-      maxlength: 10,
+      minlength: 2,
+      maxlength: 35,
     },
     puesto: {
       type: String,
