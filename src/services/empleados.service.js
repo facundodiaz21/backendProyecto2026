@@ -10,9 +10,15 @@ export const crearEmpleadoService = async (data) => {
   return await empleadoModel.create(data);
 };
 export const obtenerEmpleadosPorIdService = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
   return await empleadoModel.findById(id);
 };
 export const estadoEmpleadoService = async (id, estado) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
   const empleado = await empleadoModel.findById(id);
   if (!empleado) return null;
 
@@ -20,6 +26,9 @@ export const estadoEmpleadoService = async (id, estado) => {
   return await empleado.save();
 };
 export const editarEmpleadoServicio = async (id, data) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
   const empleado = await empleadoModel.findById(id);
   if (!empleado) return null;
 
