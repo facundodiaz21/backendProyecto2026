@@ -1,32 +1,51 @@
-import UsuarioModel from "../models/usuarios.model.js"
-import argon from "argon2"
-import jwt from "jsonwebtoken"
+import UsuarioModel from "../models/usuarios.model.js";
+import argon from "argon2";
+import jwt from "jsonwebtoken";
 
-export const registroUsuarioServicio = async (datosUsuario)=>{
-  const nuevoUsuarioDB = new UsuarioModel (datosUsuario);
-  nuevoUsuarioDB.password = await argon.hash(nuevoUsuarioDB.password);
-  await nuevoUsuarioDB.save();
-  return nuevoUsuarioDB;
-}
+// Registro
+export const registroUsuarioServicio = async (datosUsuario) => {
+  const { email, password } = datosUsuario;
 
-export const loginUsuarioServicio = async (datosUsuario) => {
-  const usuarioExistente = await UsuarioModel.findOne({
-    email: datosUsuario.email,
-  });
-  if (!usuarioExistente) return null;
+  const usuarioExistente = await UsuarioModel.findOne({ email });
+  if (usuarioExistente) {
+    throw new Error("El email ya está registrado");
+  }
 
-  const contraseniaOk = await argon.verify(
-    usuarioExistente.password,
-    datosUsuario.password
+  const nuevoUsuario = new UsuarioModel(datosUsuario);
+
+  nuevoUsuario.password = await argon.hash(password);
+
+  await nuevoUsuario.save();
+
+  return {
+    id: nuevoUsuario._id,
+    usuario: nuevoUsuario.usuario,
+    email: nuevoUsuario.email,
+    rol: nuevoUsuario.rol,
+  };
+};
+
+// Login
+export const loginUsuarioServicio = async ({ email, password }) => {
+  const usuarioExistente = await UsuarioModel.findOne({ email }).select(
+    "+password"
   );
-  if (!contraseniaOk) return null;
 
-  const rolPermitidos = ["admin", "usuario"];
-  const rolValido = rolPermitidos.includes(usuarioExistente.rol);
+  if (!usuarioExistente) {
+    throw new Error("Usuario o contraseña incorrectos");
+  }
+
+  const passwordOk = await argon.verify(
+    usuarioExistente.password,
+    password
+  );
+
+  if (!passwordOk) {
+    throw new Error("Usuario o contraseña incorrectos");
+  }
 
   const payload = {
-    usuario: usuarioExistente.usuario,
-    email: usuarioExistente.email,
+    id: usuarioExistente._id,
     rol: usuarioExistente.rol,
   };
 
@@ -35,13 +54,12 @@ export const loginUsuarioServicio = async (datosUsuario) => {
   });
 
   return {
-    statusCode: 200,
-    json: {
-      msg: `Bienvenido ${
-        rolValido ? usuarioExistente.rol : "ROL DESCONOCIDO"
-      }`,
-      usuarioLogueado: payload,
-      token,
+    token,
+    usuario: {
+      id: usuarioExistente._id,
+      usuario: usuarioExistente.usuario,
+      email: usuarioExistente.email,
+      rol: usuarioExistente.rol,
     },
   };
 };
